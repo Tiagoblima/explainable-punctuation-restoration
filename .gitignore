@@ -1,2 +1,5 @@
 nlp-annotation/data
 .idea/
+/nlp-annotation/data/
+/nlp-annotation/notebooks/
+/nlp-annotation/
