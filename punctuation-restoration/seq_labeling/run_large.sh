@@ -14,14 +14,14 @@
 huggingface-cli login
 HF_TOKEN='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'
 python3 run_train.py \
-  --model_name_or_path neuralmind/bert-base-portuguese-cased \
-  --dataset_name tiagoblima/punctuation-nilc \
-  --output_dir /tmp/test-ner \
+  --model_name_or_path neuralmind/bert-large-portuguese-cased \
+  --dataset_name tiagoblima/punctuation-tedtalk2012 \
+  --output_dir tiagoblima/punctuation-tedtalk2012-bert-large \
   --do_train \
   --do_eval \
   --do_predict \
   --push_to_hub \
+  --num_train_epochs 10 \
   --push_to_hub_token $HF_TOKEN \
   --use_auth_token \
-  --num_train_epochs 0.5 \
   --report_to wandb

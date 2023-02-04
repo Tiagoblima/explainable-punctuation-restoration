@@ -381,6 +381,8 @@ def main():
         cache_dir=model_args.cache_dir,
         revision=model_args.model_revision,
         use_auth_token=True if model_args.use_auth_token else None,
+        ignore_verifications=True,
+        download_mode="force_redownload",
         ignore_mismatched_sizes=model_args.ignore_mismatched_sizes,
     )
 

@@ -334,6 +334,8 @@ def main():
             data_args.dataset_name,
             data_args.dataset_config_name,
             cache_dir=model_args.cache_dir,
+            ignore_verifications=True,
+            download_mode="force_redownload",
             use_auth_token=True if model_args.use_auth_token else None,
         )
     else:
