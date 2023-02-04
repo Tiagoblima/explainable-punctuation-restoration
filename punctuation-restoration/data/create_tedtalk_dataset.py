@@ -44,7 +44,7 @@ def build_dataset(output_root, folder_path, dict_tedtalk):
 @click.option('--input_path', default='../archives/pt-br-en.tgz', help='Input path')
 def main(output_root, folder_path, dict_tedtalk, input_path):
     try:
-        os.makedirs('2012-03/ptbr')
+        os.makedirs('../archives/2012-03/ptbr')
     except OSError:
         pass
 
