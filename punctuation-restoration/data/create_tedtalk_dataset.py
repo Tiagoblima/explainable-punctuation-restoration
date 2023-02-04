@@ -44,7 +44,7 @@ def build_dataset(output_root, folder_path, dict_tedtalk):
 @click.option('--input_path', default='../archives/pt-br-en.tgz', help='Input path')
 def main(output_root, folder_path, dict_tedtalk, input_path):
     try:
-        os.makedirs('../archives/2012-03/ptbr')
+        os.makedirs(output_root)
     except OSError:
         pass
 
@@ -59,8 +59,10 @@ def main(output_root, folder_path, dict_tedtalk, input_path):
     file.close()
 
     build_dataset(output_root, folder_path, eval(dict_tedtalk))
-    print(output_root)
-    dataset = load_dataset('json', data_dir=output_root)
+
+    dataset = load_dataset('json', data_files={'train': os.path.join(output_root, 'train.jsonl'),
+                                               'validation': os.path.join(output_root, 'validation.jsonl'),
+                                               'test': os.path.join(output_root, 'test.jsonl')})
     dataset.push_to_hub('tiagoblima/tedtalk2012-03', private=True)
     print(dataset)
 
