@@ -21,7 +21,6 @@ def build_dataset(output_root, folder_path, dict_tedtalk):
 
                 dts = file.split('.')[-4]
                 split = dict_tedtalk[dts]
-                outpath = os.path.join(output_root, f'{split}.txt')
 
                 if not transcripts:
                     segs = bs_content.find_all('seg')
@@ -29,7 +28,7 @@ def build_dataset(output_root, folder_path, dict_tedtalk):
                 with jsonlines.open(os.path.join(output_root, split + '.jsonl'), mode='w') as writer:
                     for transp in transcripts:
                         writer.write({
-                            'text': transp.get_text().strip(),
+                            'text': transp.get_text().strip().encode('utf-8').decode('utf-8'),
                             'lang': 'pt',
                             'id': i,
                         })
