@@ -11,6 +11,7 @@ from utils.preprocess import preprocess_text
 
 def build_dataset(output_root, folder_path, dict_tedtalk):
     i = 0
+    folder_path = os.path.join(folder_path, 'pt-br-en', 'pt-br-en')
     for file in os.listdir(folder_path):
 
         if file.endswith(".pt-br") or file.endswith('.pt-br.xml'):
