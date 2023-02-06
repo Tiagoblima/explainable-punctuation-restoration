@@ -4,6 +4,7 @@ import tarfile
 
 import click
 import jsonlines
+import tqdm
 from bs4 import BeautifulSoup as bs
 from datasets import load_dataset
 from utils.preprocess import preprocess_text
@@ -28,7 +29,7 @@ def build_dataset(output_root, folder_path, dict_tedtalk):
                     segs = bs_content.find_all('seg')
                     transcripts = segs
                 with jsonlines.open(os.path.join(output_root, split + '.jsonl'), mode='w') as writer:
-                    for transp in transcripts:
+                    for transp in tqdm.tqdm(transcripts, total=len(transcripts)):
                         writer.write({
                             'text': preprocess_text(transp.get_text().strip()),
                             'lang': 'pt',
