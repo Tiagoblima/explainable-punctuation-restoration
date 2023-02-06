@@ -94,11 +94,7 @@ def preprocess_text(text):
 
     text = join_punctuation_marks(text)
 
-    title, lines = split_lines(text)
-    lines = [clean_text(line) for line in lines]
-    lines = list(filter(lambda x: x != '', lines))
-
-    return title, lines
+    return text
 
 
 def main():
