@@ -6,6 +6,7 @@ import click
 import jsonlines
 from bs4 import BeautifulSoup as bs
 from datasets import load_dataset
+from utils.preprocess import preprocess_text
 
 
 def build_dataset(output_root, folder_path, dict_tedtalk):
@@ -28,7 +29,7 @@ def build_dataset(output_root, folder_path, dict_tedtalk):
                 with jsonlines.open(os.path.join(output_root, split + '.jsonl'), mode='w') as writer:
                     for transp in transcripts:
                         writer.write({
-                            'text': transp.get_text().strip().encode('utf-8').decode('utf-8'),
+                            'text': preprocess_text(transp.get_text().strip()),
                             'lang': 'pt',
                             'id': i,
                         })

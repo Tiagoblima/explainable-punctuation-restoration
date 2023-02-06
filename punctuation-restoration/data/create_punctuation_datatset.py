@@ -3,28 +3,13 @@ import re
 import string
 
 import click
+import tqdm
 from datasets import load_dataset
 from utils.utils import text2labels, text2t5labels
 from nltk.tokenize import sent_tokenize
-from utils.preprocess import join_punctuation_marks, remove_space_before_punctuation, remove_extra_punctuation
+from utils.preprocess import preprocess_text, remove_space_before_punctuation, remove_extra_punctuation
 
 import jsonlines
-
-
-def preprocess_text(text):
-    text = re.sub(r'[!;]', '.', text)
-    text = re.sub(r'[:]', ',', text)
-    text = re.sub(r'\s[-]\s', ',', text).lower()
-
-    text = join_punctuation_marks(text)
-    text = remove_space_before_punctuation(text)
-    text = remove_extra_punctuation(text)
-
-    emotions = re.findall(r'\(\w+\)', text)
-    if len(emotions) > 0:
-        return None
-
-    return text
 
 
 def build_dataset(dataset, save_path, data_format):
@@ -35,17 +20,19 @@ def build_dataset(dataset, save_path, data_format):
         i = 0
 
         with jsonlines.open(os.path.join(save_path, split + '.jsonl'), 'w') as f:
-            for indx in range(dataset_split.num_rows):
+            for indx in tqdm.tqdm(range(dataset_split.num_rows)):
 
                 item = dataset_split[indx]
-                line = item['text']
+                raw_text = item['text']
 
-                text = preprocess_text(line)
+                text = preprocess_text(raw_text)
 
                 try:
+
                     for sent_text in sent_tokenize(text):
 
                         if sent_text in string.punctuation:
+                            print(f"Skip punctuation {sent_text}")
                             continue
                         item.update({
                             "sent_text": sent_text,
@@ -57,11 +44,11 @@ def build_dataset(dataset, save_path, data_format):
                             item.update(text2t5labels(sent_text))
                         else:
                             raise ValueError("Unknown data format")
+                        f.write(item)
                 except ValueError:
                     print(f"Can't tokenize sentence {text}")
                     breakpoint()
                 i += 1
-                f.write(item)
 
 
 @click.command()
