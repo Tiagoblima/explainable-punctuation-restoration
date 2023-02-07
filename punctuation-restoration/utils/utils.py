@@ -44,6 +44,17 @@ def text2t5labels(sentence):
     return {"text_input": ' '.join(new_tokens), "labels": ' '.join(labels)}
 
 
+def remove_punctuation(text):
+    """
+    Remove punctuation from text
+    :param text: text to remove punctuation from
+    :return:  text without punctuation
+    """
+    text = [word.lower() for word in wordpunct_tokenize(text)
+            if word not in string.punctuation]
+    return text
+
+
 def text2labels(sentence):
     """
     Convert text to labels
