@@ -67,7 +67,7 @@ def save_dataset(dataset, save_path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset_path', type=str, default='dataset')
+    parser.add_argument('--dataset_path', type=str, default='tiagoblima/punctuation-nilc-bert')
     parser.add_argument('--save_path', type=str, default='dataset')
     parser.add_argument('--data_filter', type=str, default='Ensino_Fundamental_I, Ensino_Fundamental_II')
     parser.add_argument('--split', type=str, default='train, validation, test')
@@ -85,3 +85,7 @@ def main():
         split = 'dev' if split == 'validation' else split
 
         save_dataset(filtered_ds['text'], os.path.join(args.save_path, f'{split}.{args.save_format}'))
+
+
+if __name__ == '__main__':
+    main()
