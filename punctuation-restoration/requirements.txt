@@ -1,0 +1,6 @@
+transformers
+datasets
+seqeval
+huggingface_hub
+spacy==3.2.4
+#python -m spacy download pt_core_news_lg
