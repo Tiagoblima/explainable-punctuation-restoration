@@ -217,7 +217,7 @@ if __name__ == '__main__':
     parser.add_argument('--embeddings', default='skip_s300',
                         help='It must one of such models valid bert model, see hugginface plataform.')
 
-    parser.add_argument('--batch_size', default=32,
+    parser.add_argument('--batch_size', default=4,
                         help='Batch size for training.')
 
     parser.add_argument('--k_fold_eval',
