@@ -222,7 +222,7 @@ if __name__ == '__main__':
                         default=False,
                         help='Files must be a dataframe with headers sentence_id,words,label')
 
-    parser.add_argument('--embedding_path', default='./embeddings', help='Embedding path')
+    parser.add_argument('--embeddings_bin_file', default='./embeddings', help='Embedding path')
 
     parser.add_argument('--use_crf', default=True, action='store_true')
 
