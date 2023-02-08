@@ -47,7 +47,7 @@ class MyProgressBar():
 def run_train(trainer, args):
     wandb.login(key=args.wandb_key)
     with wandb.init(project=args.wandb_project) as run:
-        run.name = f'bilstm_{args.embedding_name}-{args.folder}'
+        run.name = f'bilstm_{args.embeddings}-{args.dataset}'
         trainer.train(args.model_dir, optimizer=SGDW, learning_rate=0.1, mini_batch_size=args.batch_size,
                       max_epochs=args.n_epochs)
 
@@ -216,6 +216,9 @@ if __name__ == '__main__':
 
     parser.add_argument('--embeddings', default='skip_s300',
                         help='It must one of such models valid bert model, see hugginface plataform.')
+
+    parser.add_argument('--batch_size', default=32,
+                        help='Batch size for training.')
 
     parser.add_argument('--k_fold_eval',
                         action='store_true',
