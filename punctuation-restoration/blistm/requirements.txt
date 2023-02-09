@@ -1,2 +1,4 @@
 wandb
 flair
+datasets
+huggingface-hub
