@@ -62,7 +62,7 @@ def save_dataset(dataset, save_path):
             tokens = [token for token in tokens if token not in string.punctuation]
             for word, label in zip(tokens, labels):
                 f.write(f"{word} {label} \n")
-        f.write('\n')
+            f.write('\n')
 
 
 def main():
