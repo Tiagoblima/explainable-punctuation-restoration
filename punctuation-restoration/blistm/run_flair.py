@@ -73,7 +73,7 @@ def k_folding(args):
             # # filter empty sentences
             # corpus.filter_empty_sentences()
             # Create a new run
-            project = "punctuation-restoration-kfold"
+            project = "punctuation-blstm" + args.dataset
 
             tag_type = 'ner'
 
@@ -186,10 +186,11 @@ def train(args):
 
     trainer = ModelTrainer(tagger, corpus)
 
-    wandb.login(key='8e593ae9d0788bae2e0a84d07de0e76f5cf3dcf4')
+    wandb.login(key=args.wandb_key)
 
     run_train(trainer, args)
 
+    wandb.save(model_dir + '/*')
     test_results_file = os.path.join(model_dir, 'test.tsv')
     new_test_file = os.path.join(model_dir, corpus_name + '_conlleval_test.tsv')
     generate_test_file(test_results_file, new_test_file)
