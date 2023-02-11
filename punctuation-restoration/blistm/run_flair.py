@@ -102,13 +102,13 @@ def download_embeddings(args):
     try:
 
         print("Downloading embeddings...")
-        url = embeddings.get(args.embedding_name, None)
+        url = embeddings.get(args.embeddings, None)
 
         if url is None:
-            print(f'Embedding {args.embedding_name} not found')
+            print(f'Embedding {args.embeddings} not found')
             return
 
-        response = request.urlretrieve(url, args.embedding_name + ".zip", MyProgressBar())
+        response = request.urlretrieve(url, args.embeddings + ".zip", MyProgressBar())
     except HTTPError as e:
         print(f'In func my_open got HTTP {e.code} {e.reason}')
 
@@ -162,7 +162,7 @@ def train(args):
         args.model_dir += '_crf'
         print('\nRunning using CRF')
 
-    os.makedirs(model_dir, exist_ok=True)
+    os.makedirs(args.model_dir, exist_ok=True)
     columns = {0: 'token', 1: args.tag_type}
 
     corpus = ColumnCorpus(args.path_to_data, columns)
