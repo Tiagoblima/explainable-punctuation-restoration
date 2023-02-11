@@ -96,6 +96,7 @@ def main(
     for split in splits.split(','):
         split = split.strip()
         dataset_split = dataset[split]
+        split = split.replace('validation', 'dev')
         save_dataset(dataset_split[text_column], os.path.join(save_path, f'{split}.{save_format}'))
 
 

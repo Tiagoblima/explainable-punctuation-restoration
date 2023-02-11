@@ -3,6 +3,8 @@ import shutil
 import zipfile
 from urllib import request
 from urllib.error import HTTPError
+
+import progressbar
 import wandb
 from flair.data import Sentence
 from flair.datasets import ColumnCorpus
