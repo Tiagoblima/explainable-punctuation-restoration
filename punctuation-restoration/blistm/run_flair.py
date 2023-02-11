@@ -3,8 +3,6 @@ import shutil
 import zipfile
 from urllib import request
 from urllib.error import HTTPError
-
-import progressbar
 import wandb
 from flair.data import Sentence
 from flair.datasets import ColumnCorpus
@@ -14,8 +12,6 @@ from flair.trainers import ModelTrainer
 from flair.optim import SGDW
 import pandas as pd
 from gensim.models import KeyedVectors
-
-from evaluate import evaluate
 from preprocess import preprocess
 from utils import generate_test_file
 import argparse
