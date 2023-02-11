@@ -117,6 +117,7 @@ def download_embeddings(args):
 
 
 def convert_embeddings(args):
+    args.embeddings_bin_file = os.path.join(args.embedding_path, args.embeddings + '.bin')
     embeddings = KeyedVectors.load_word2vec_format(os.path.join(args.embedding_path, *os.listdir(args.embedding_path)),
                                                    binary=False)
 
