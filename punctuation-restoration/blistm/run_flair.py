@@ -147,8 +147,8 @@ def train(args):
         embedding_name = args.embeddings.split('/')[-1].split('.')[0]
         args.model_dir += f'_{embedding_name}'
 
-    elif embedding_name == 'bert':
-        bert_embedding = TransformerWordEmbeddings('neuralmind/bert-base-portuguese-cased', layers='-1',
+    elif embedding_name.split('/')[-1].split('-')[0] == 'bert':
+        bert_embedding = TransformerWordEmbeddings(embedding_name, layers='-1',
                                                    layer_mean=False)
         embedding_types.append(bert_embedding)
         args.model_dir += f'_{embedding_name}'
