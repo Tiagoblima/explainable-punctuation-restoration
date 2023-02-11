@@ -2,3 +2,5 @@ wandb
 flair
 datasets
 huggingface-hub
+progressbar2
+nltk
