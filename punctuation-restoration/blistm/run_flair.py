@@ -111,7 +111,7 @@ def download_embeddings(args):
         print(f'In func my_open got HTTP {e.code} {e.reason}')
 
     print("Unzipping embeddings...")
-
+    args.embedding_path = './embeddings/'
     with zipfile.ZipFile(args.embeddings + ".zip", 'r') as zip_ref:
         zip_ref.extractall(args.embedding_path)
 
