@@ -1,5 +1,6 @@
 import argparse
 
+import click
 from datasets import load_dataset
 from nltk.tokenize import wordpunct_tokenize
 import string
@@ -65,24 +66,35 @@ def save_dataset(dataset, save_path):
             f.write('\n')
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset_path', type=str, default='tiagoblima/punctuation-nilc-bert')
-    parser.add_argument('--save_path', type=str, default='dataset')
-    parser.add_argument('--split', type=str, default='train, validation, test')
-    parser.add_argument('--save_format', type=str, default='txt')
-    parser.add_argument('--text_column', type=str, default='sent_text')
+@click.command()
+@click.option('--dataset_path', type=str, default='tiagoblima/punctuation-nilc-bert')
+@click.option('--save_path', type=str, default='dataset')
+@click.option('--splits', type=str, default='train, validation, test')
+@click.option('--save_format', type=str, default='txt')
+@click.option('--text_column', type=str, default='sent_text')
+def main(
+        dataset_path,
+        save_path,
+        splits,
+        save_format,
+        text_column
+):
+    """
+    Build dataset from dataset path
+    :param dataset_path:  path to dataset
+    :param save_path:  path to save dataset
+    :param splits:  split to use
+    :param save_format:  format to save dataset
+    :param text_column:    column to use as text
+    :return:  None
+    """
+    os.makedirs(save_path, exist_ok=True)
 
-    args = parser.parse_args()
-
-    os.makedirs(args.save_path, exist_ok=True)
-
-    dataset = load_dataset(args.dataset_path)
-    for split in ['train', 'validation', 'test']:
-
+    dataset = load_dataset(dataset_path)
+    for split in splits.split(','):
         split = 'dev' if split == 'validation' else split
 
-        save_dataset(dataset['text'], os.path.join(args.save_path, f'{split}.{args.save_format}'))
+        save_dataset(dataset[text_column], os.path.join(save_path, f'{split}.{save_format}'))
 
 
 if __name__ == '__main__':
