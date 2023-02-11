@@ -45,11 +45,11 @@ class MyProgressBar():
 
 
 def run_train(trainer, args):
-    wandb.login(key=args.wandb_key)
     with wandb.init(project=args.wandb_project) as run:
         run.name = f'bilstm_{args.embeddings}-{args.dataset}'
         trainer.train(args.model_dir, optimizer=SGDW, learning_rate=0.1, mini_batch_size=args.batch_size,
                       max_epochs=args.n_epochs)
+        wandb.save(args.model_dir + '/*')
 
 
 def k_folding(args):
@@ -119,20 +119,21 @@ def download_embeddings(args):
 
 
 def convert_embeddings(args):
-    embeddings = KeyedVectors.load_word2vec_format(os.path.join(args.embedding_path, *os.listdir(args.embedding_path)), binary=False)
+    embeddings = KeyedVectors.load_word2vec_format(os.path.join(args.embedding_path, *os.listdir(args.embedding_path)),
+                                                   binary=False)
 
     embeddings.save(args.embeddings_bin_file)
 
 
 def train(args):
-    wandb.init()
-    corpus_name = args.dataset
+    if args.wandb_key is not None:
+        wandb.login(key=args.wandb_key)
 
     embedding_name = args.embeddings
     embedding_types = []
 
     print(f'\nRunning using {args.embeddings}')
-
+    args.model_dir = os.path.join(args.model_dir, args.dataset)
     if embedding_name == 'skip_s300':
 
         if not os.path.exists(args.embeddings_bin_file):
@@ -161,23 +162,17 @@ def train(args):
         args.model_dir += '_crf'
         print('\nRunning using CRF')
 
-    model_dir = os.path.join(args.model_dir, corpus_name)
-
     os.makedirs(model_dir, exist_ok=True)
     columns = {0: 'token', 1: args.tag_type}
 
     corpus = ColumnCorpus(args.path_to_data, columns)
 
     print('Train: ', corpus.train[0].to_tagged_string('label'))
-
     print('Dev: ', corpus.dev[0].to_tagged_string('label'))
-
     print('Test: ', corpus.test[0].to_tagged_string('label'))
 
     tag_type = 'ner'
-
     tag_dictionary = corpus.make_label_dictionary(label_type=tag_type)
-
     tag_dictionary.remove_item('<unk>')
 
     print('\nTags: ', tag_dictionary.idx2item)
@@ -187,13 +182,10 @@ def train(args):
 
     trainer = ModelTrainer(tagger, corpus)
 
-    wandb.login(key=args.wandb_key)
-
     run_train(trainer, args)
 
-    wandb.save(model_dir + '/*')
-    test_results_file = os.path.join(model_dir, 'test.tsv')
-    new_test_file = os.path.join(model_dir, corpus_name + '_conlleval_test.tsv')
+    test_results_file = os.path.join(args.model_dir, 'test.tsv')
+    new_test_file = os.path.join(args.model_dir, f'{args.dataset}_conlleval_test.tsv')
     generate_test_file(test_results_file, new_test_file)
 
 
@@ -239,7 +231,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--wandb', default=True, action='store_true', help='Wandb')
 
-    parser.add_argument('--wandb_project', default='punctuation-restoration-kfold', help='Wandb project name')
+    parser.add_argument('--wandb_project', default='punctuation-restoration', help='Wandb project name')
 
     parser.add_argument('--wandb_key', default=WANDB_KEY, help='Wandb Key')
 

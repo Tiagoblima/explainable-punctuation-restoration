@@ -67,7 +67,7 @@ def save_dataset(dataset, save_path):
 
 @click.command()
 @click.option('--dataset_path', type=str, default='tiagoblima/punctuation-nilc-bert')
-@click.option('--save_path', type=str, default='dataset')
+@click.option('--save_path', type=str, default=None)
 @click.option('--splits', type=str, default='train,validation,test')
 @click.option('--save_format', type=str, default='txt')
 @click.option('--text_column', type=str, default='sent_text')
@@ -87,6 +87,10 @@ def main(
     :param text_column:    column to use as text
     :return:  None
     """
+
+    if save_path is None:
+        save_path = dataset_path
+
     os.makedirs(save_path, exist_ok=True)
 
     dataset = load_dataset(dataset_path)
