@@ -21,7 +21,7 @@ python3 run_train.py \
   --do_eval \
   --do_predict \
   --push_to_hub \
-  --num_train_epochs 10 \
+  --num_train_epochs 1 \
   --push_to_hub_token $HF_TOKEN \
   --use_auth_token \
   --report_to wandb
