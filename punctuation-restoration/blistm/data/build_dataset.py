@@ -66,13 +66,13 @@ def save_dataset(dataset, save_path):
 
 
 @click.command()
-@click.option('--dataset_path', type=str, default='tiagoblima/punctuation-nilc-bert')
-@click.option('--save_path', type=str, default=None)
+@click.option('--dataset_name', type=str, default='tiagoblima/punctuation-nilc-bert')
+@click.option('--save_path', type=str, default='datasets')
 @click.option('--splits', type=str, default='train,validation,test')
 @click.option('--save_format', type=str, default='txt')
 @click.option('--text_column', type=str, default='sent_text')
 def main(
-        dataset_path,
+        dataset_name,
         save_path,
         splits,
         save_format,
@@ -80,7 +80,7 @@ def main(
 ):
     """
     Build dataset from dataset path
-    :param dataset_path:  path to dataset
+    :param dataset_name:  path to dataset
     :param save_path:  path to save dataset
     :param splits:  split to use
     :param save_format:  format to save dataset
@@ -88,12 +88,11 @@ def main(
     :return:  None
     """
 
-    if save_path is None:
-        save_path = dataset_path
+    save_path = os.path.join(save_path, dataset_name)
 
     os.makedirs(save_path, exist_ok=True)
 
-    dataset = load_dataset(dataset_path)
+    dataset = load_dataset(dataset_name)
     for split in splits.split(','):
         split = split.strip()
         dataset_split = dataset[split]
