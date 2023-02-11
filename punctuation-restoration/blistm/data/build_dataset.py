@@ -92,7 +92,6 @@ def main(
     dataset = load_dataset(dataset_path)
     for split in splits.split(','):
         split = split.strip()
-        split = 'dev' if split == 'validation' else split
         dataset_split = dataset[split]
         save_dataset(dataset_split[text_column], os.path.join(save_path, f'{split}.{save_format}'))
 
