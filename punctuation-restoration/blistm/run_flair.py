@@ -23,7 +23,7 @@ import argparse
 WANDB_KEY = '8e593ae9d0788bae2e0a84d07de0e76f5cf3dcf4'
 
 embeddings = {
-    'skip_s300': "http://143.107.183.175:22980/download.php?file=embeddings/word2vec/skip_s300.zip",
+    'skip_s300': "https://www.dropbox.com/s/ezuj1fqmjotync6/skip_s300%20%281%29.zip?dl=1",
     'glove': "http://143.107.183.175:22980/download.php?file=embeddings/glove/glove_s300.zip"
 }
 
@@ -125,6 +125,7 @@ def convert_embeddings(args):
 
 
 def train(args):
+    wandb.init()
     corpus_name = args.dataset
 
     embedding_name = args.embeddings
