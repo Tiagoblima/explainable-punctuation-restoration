@@ -71,7 +71,7 @@ def main():
     parser.add_argument('--save_path', type=str, default='dataset')
     parser.add_argument('--split', type=str, default='train, validation, test')
     parser.add_argument('--save_format', type=str, default='txt')
-    parser.add_argument('--filter_column', type=str, default='level')
+    parser.add_argument('--text_column', type=str, default='sent_text')
 
     args = parser.parse_args()
 
