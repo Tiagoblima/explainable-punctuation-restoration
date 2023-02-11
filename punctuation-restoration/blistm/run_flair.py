@@ -5,6 +5,7 @@ from urllib import request
 from urllib.error import HTTPError
 
 import progressbar
+import torch.cuda
 import wandb
 from flair.data import Sentence
 from flair.datasets import ColumnCorpus
@@ -43,10 +44,11 @@ class MyProgressBar():
 
 
 def run_train(trainer, args):
+    storage_mode = 'gpu' if torch.cuda.is_available() else 'cpu'
     with wandb.init(project=args.wandb_project) as run:
         run.name = f'bilstm_{args.embeddings}-{args.dataset}'
         trainer.train(args.model_dir,
-                      embeddings_storage_mode='gpu',
+                      embeddings_storage_mode=storage_mode,
                       optimizer=SGDW, learning_rate=0.1, mini_batch_size=args.batch_size,
                       max_epochs=args.n_epochs)
         wandb.save(args.model_dir + '/*')
