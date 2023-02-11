@@ -114,7 +114,7 @@ def download_embeddings(args):
 
     print("Unzipping embeddings...")
 
-    with zipfile.ZipFile(args.embedding_name + ".zip", 'r') as zip_ref:
+    with zipfile.ZipFile(args.embeddings + ".zip", 'r') as zip_ref:
         zip_ref.extractall(args.embedding_path)
 
 
