@@ -1,10 +1,9 @@
-import argparse
+import os
+import string
 
 import click
 from datasets import load_dataset
 from nltk.tokenize import wordpunct_tokenize
-import string
-import os
 
 id2label = {
     0: 'O',
@@ -93,8 +92,8 @@ def main(
     dataset = load_dataset(dataset_path)
     for split in splits.split(','):
         split = 'dev' if split == 'validation' else split
-
-        save_dataset(dataset[text_column], os.path.join(save_path, f'{split}.{save_format}'))
+        dataset_split = dataset[split]
+        save_dataset(dataset_split[text_column], os.path.join(save_path, f'{split}.{save_format}'))
 
 
 if __name__ == '__main__':
