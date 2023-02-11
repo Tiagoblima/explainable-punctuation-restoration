@@ -45,7 +45,9 @@ class MyProgressBar():
 def run_train(trainer, args):
     with wandb.init(project=args.wandb_project) as run:
         run.name = f'bilstm_{args.embeddings}-{args.dataset}'
-        trainer.train(args.model_dir, optimizer=SGDW, learning_rate=0.1, mini_batch_size=args.batch_size,
+        trainer.train(args.model_dir,
+                      embeddings_storage_mode='gpu',
+                      optimizer=SGDW, learning_rate=0.1, mini_batch_size=args.batch_size,
                       max_epochs=args.n_epochs)
         wandb.save(args.model_dir + '/*')
 
