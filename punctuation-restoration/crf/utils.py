@@ -3,10 +3,7 @@ import spacy
 
 def read_corpus_file(corpus_file, split_char=','):
     with open(corpus_file, encoding='utf-8') as file_:
-        lines_ = file_.read().splitlines()
-        print('  Corpus file:', corpus_file, 'lines:', len(lines_))
-        print(lines_[:10])
-
+        lines_ = file_.readlines()
     data_ = []
     words_ = []
     tags_ = []
