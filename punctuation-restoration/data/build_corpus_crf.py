@@ -60,9 +60,10 @@ def save_dataset(dataset, save_path):
     with open(save_path, 'w') as f:
         for sentence in nlp.pipe(dataset, batch_size=1000):
 
-            tokens = [token.text for token in sentence]
+            tokens = [token.text.lower() for token in sentence]
             labels = tokens2labels(tokens)
-            tokens_postag = [(token.text, nlp.vocab[token.pos].text) for token in sentence if not token.is_punct]
+            tokens_postag = [(token.text.lower(), nlp.vocab[token.pos].text) for token in sentence if
+                             not token.is_punct]
 
             for (word, pos), label in zip(tokens_postag, labels):
                 try:
@@ -73,6 +74,7 @@ def save_dataset(dataset, save_path):
     print(f"Saved dataset to {save_path}")
     print(f"Dataset size: {len(dataset)}")
     print(os.listdir(save_path))
+
 
 @click.command()
 @click.option('--dataset_name', type=str, default='tiagoblima/punctuation-nilc-bert')
