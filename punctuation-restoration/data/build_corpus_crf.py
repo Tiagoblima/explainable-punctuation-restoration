@@ -73,7 +73,6 @@ def save_dataset(dataset, save_path):
             f.write('\n')
     print(f"Saved dataset to {save_path}")
     print(f"Dataset size: {len(dataset)}")
-    print(os.listdir(save_path))
 
 
 @click.command()
