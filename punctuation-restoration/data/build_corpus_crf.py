@@ -62,7 +62,7 @@ def save_dataset(dataset, save_path, nlp, data_format='conll'):
     with open(save_path, 'w') as f:
         sent_id = 0
         if data_format == 'csv':
-            f.write('sent_id,word,pos,label')
+            f.write('sent_id,word,pos,label\n')
         for sentence in nlp.pipe(dataset, batch_size=1000):
             tokens = [token.text.lower() for token in sentence]
             labels = tokens2labels(tokens)
