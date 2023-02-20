@@ -1,5 +1,6 @@
 import argparse
 import os
+from itertools import chain
 
 import numpy as np
 import pandas as pd
@@ -146,6 +147,8 @@ def run(args):
         y_pred = crf.predict(X_test)
         print(y_pred[:1])
         print(y_test[:1])
+        print(set(chain.from_iterable(y_pred)))
+        print(set(chain.from_iterable(y_test)))
         dict_report = classification_report(y_test, y_pred, output_dict=True)
 
         data_conll = ''
