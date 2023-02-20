@@ -36,6 +36,7 @@ def data_preprocessing(data):
         pos_tags = [t.pos_ for t in doc]
         print((d[0], pos_tags, d[1]))
         preprocessed_data.append((d[1], pos_tags, d[0]))
+        break
     return preprocessed_data
 
 
