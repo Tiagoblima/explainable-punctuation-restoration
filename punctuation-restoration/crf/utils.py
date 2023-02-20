@@ -19,8 +19,8 @@ def read_corpus_file(corpus_file, split_char=','):
             data_.append((words_, tags_))
             words_ = []
             tags_ = []
-        words_.append(fragments[2])
-        tags_.append(fragments[1])
+        words_.append(fragments[1])
+        tags_.append(fragments[2])
         previous_id_sent = current_id_sent
     data_.append((words_, tags_))
     return data_
