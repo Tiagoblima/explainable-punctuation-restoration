@@ -30,11 +30,12 @@ def data_preprocessing(data):
     nlp = spacy.load('pt_core_news_sm', disable=['parser', 'ner', 'lemmatizer', 'textcat'])
     preprocessed_data = []
     for d in data:
-        sentence = ' '.join(d[0])
+
+        sentence = ' '.join(d[1])
         doc = nlp(sentence)
         pos_tags = [t.pos_ for t in doc]
         print((d[0], pos_tags, d[1]))
-        preprocessed_data.append((d[0], pos_tags, d[1]))
+        preprocessed_data.append((d[1], pos_tags, d[0]))
     return preprocessed_data
 
 
