@@ -63,7 +63,7 @@ def save_dataset(dataset, save_path, nlp, data_format='conll'):
         sent_id = 0
         if data_format == 'csv':
             f.write('sent_id,word,label\n')
-        for sentence in nlp.pipe(dataset, batch_size=1000):
+        for sentence in dataset:
             tokens = wordpunct_tokenize(sentence.lower())
             labels = tokens2labels(tokens)
             tokens = [token for token in tokens if token not in string.punctuation]
