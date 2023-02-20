@@ -34,9 +34,8 @@ def data_preprocessing(data):
         sentence = ' '.join(d[0])
         doc = nlp(sentence)
         pos_tags = [t.pos_ for t in doc]
-        print((d[0], pos_tags, d[1]))
         preprocessed_data.append((d[0], pos_tags, d[1]))
-        break
+
     return preprocessed_data
 
 
