@@ -73,13 +73,12 @@ def save_dataset(dataset, save_path, nlp, data_format='conll'):
                         continue
                 f.write('\n')
             elif data_format == 'csv':
-                f.write('word,pos,label\n')
-                for (word, pos), label in zip(tokens_postag, labels):
+                f.write('sent_id,word,pos,label\n')
+                for sent_id, (word, pos), label in enumerate(zip(tokens_postag, labels)):
                     try:
-                        f.write(f"{word},{pos},{label}\n")
+                        f.write(f"{sent_id},{word},{pos},{label}\n")
                     except UnicodeEncodeError:
                         continue
-                f.write('\n')
     print(f"Saved dataset to {save_path}")
     print(f"Dataset size: {len(dataset)}")
 

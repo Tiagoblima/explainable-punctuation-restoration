@@ -1,15 +1,13 @@
+import argparse
 import os
-import shutil
 
 import numpy as np
-
-from sklearn_crfsuite import CRF
+import pandas as pd
 from seqeval.metrics import classification_report
+from sklearn_crfsuite import CRF
 
 from preprocess import preprocess
 from utils import read_corpus_file, data_preprocessing, convert_data, dump_report
-import pandas as pd
-import argparse
 
 parser = argparse.ArgumentParser(description='Process dataframe data.')
 
