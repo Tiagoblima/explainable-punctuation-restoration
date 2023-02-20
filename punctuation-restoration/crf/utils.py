@@ -1,4 +1,5 @@
 import spacy
+import tqdm
 
 
 def read_corpus_file(corpus_file, split_char=','):
@@ -9,7 +10,7 @@ def read_corpus_file(corpus_file, split_char=','):
     tags_ = []
 
     previous_id_sent = -1
-    for line in lines_[1:]:
+    for line in tqdm.tqdm(lines_[1:]):
         line = line.replace('\n', '')
         if line == '':
             continue

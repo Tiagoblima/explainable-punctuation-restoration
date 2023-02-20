@@ -80,6 +80,7 @@ def save_dataset(dataset, save_path, data_format='conll'):
                         f.write(f"{sent_id},{word},{label}\n")
                     except UnicodeEncodeError:
                         continue
+
                 sent_id += 1
     print(f"Saved dataset to {save_path}")
     print(f"Dataset size: {len(dataset)}")
