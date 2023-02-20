@@ -15,6 +15,11 @@ def read_corpus_file(corpus_file, split_char=','):
             continue
         fragments = line.split(split_char)
         current_id_sent = int(fragments[0])
+
+        if fragments[1] and fragments[2]:
+            print(fragments)
+            continue
+
         if previous_id_sent != -1 and previous_id_sent != current_id_sent:
             data_.append((words_, tags_))
             words_ = []
