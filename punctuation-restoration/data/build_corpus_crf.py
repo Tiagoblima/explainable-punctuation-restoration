@@ -32,7 +32,7 @@ def tokens2labels(tokens, return_labels=True):
                 labels[-1] = 2
 
         except IndexError:
-            raise ValueError(f"Sentence can't start with punctuation {token}")
+            continue
     if return_labels:
         labels = list(map(lambda item: id2label[item], labels))
     return labels
@@ -49,11 +49,10 @@ def remove_punctuation(text):
     return text
 
 
-def save_dataset(dataset, save_path, nlp, data_format='conll'):
+def save_dataset(dataset, save_path, data_format='conll'):
     """
     Save dataset to file
     :param data_format:
-    :param nlp:
     :param dataset: dataset to save
     :param save_path: path to save dataset
     :return: None
@@ -118,7 +117,7 @@ def main(
         split = split.strip()
         dataset_split = dataset[split]
         split = split.replace('validation', 'dev')
-        save_dataset(dataset_split[text_column], os.path.join(save_path, f'{split}.{save_format}'), nlp, save_format)
+        save_dataset(dataset_split[text_column], os.path.join(save_path, f'{split}.{save_format}'), save_format)
 
 
 if __name__ == '__main__':
