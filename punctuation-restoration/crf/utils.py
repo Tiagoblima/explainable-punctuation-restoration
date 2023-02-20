@@ -7,6 +7,7 @@ def read_corpus_file(corpus_file, split_char=','):
     data_ = []
     words_ = []
     tags_ = []
+    print(lines_[:10])
     previous_id_sent = -1
     for line in lines_[1:]:
         line = line.replace('\n', '')
