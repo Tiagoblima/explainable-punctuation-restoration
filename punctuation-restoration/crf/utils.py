@@ -30,7 +30,6 @@ def data_preprocessing(data):
     nlp = spacy.load('pt_core_news_sm', disable=['parser', 'ner', 'lemmatizer', 'textcat'])
     preprocessed_data = []
     for d in data:
-
         sentence = ' '.join(d[0])
         doc = nlp(sentence)
         pos_tags = [t.pos_ for t in doc]
@@ -54,9 +53,8 @@ def extract_labels(sentence):
 
 
 def extract_features(sentence, i):
-    word = sentence[i][0].encode('ascii', 'ignore').decode('ascii')
-    postag = sentence[i][1].encode('ascii', 'ignore').decode('ascii')
-
+    word = sentence[i][0]
+    postag = sentence[i][1]
 
     features = {
         'bias': 1.0,
