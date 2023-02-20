@@ -77,8 +77,6 @@ def run(args):
                 micro_avg.pop('support')
                 results_micro_avg.append(micro_avg)
 
-
-
                 data_conll = ''
 
                 for data, real_tags, pred_tags in zip(test_data, y_test, y_pred):
@@ -112,7 +110,6 @@ def run(args):
         report_dir = f'./results/{corpus_name}'
         os.makedirs(report_dir, exist_ok=True)
 
-        preprocess(BASE_DIR, args.path_to_data)
         train_file = os.path.join(args.path_to_data, 'train.csv')
         test_file = os.path.join(args.path_to_data, 'test.csv')
 

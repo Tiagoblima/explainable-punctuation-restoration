@@ -49,28 +49,37 @@ def remove_punctuation(text):
     return text
 
 
-def save_dataset(dataset, save_path):
+def save_dataset(dataset, save_path, nlp, data_format='conll'):
     """
     Save dataset to file
+    :param data_format:
+    :param nlp:
     :param dataset: dataset to save
     :param save_path: path to save dataset
     :return: None
     """
-    nlp = spacy.load('pt_core_news_sm', disable=['parser', 'ner', 'lemmatizer', 'textcat'])
+
     with open(save_path, 'w') as f:
         for sentence in nlp.pipe(dataset, batch_size=1000):
-
             tokens = [token.text.lower() for token in sentence]
             labels = tokens2labels(tokens)
             tokens_postag = [(token.text.lower(), nlp.vocab[token.pos].text) for token in sentence if
                              not token.is_punct]
-
-            for (word, pos), label in zip(tokens_postag, labels):
-                try:
-                    f.write(f"{word} {pos} {label}\n")
-                except UnicodeEncodeError:
-                    continue
-            f.write('\n')
+            if data_format == 'conll':
+                for (word, pos), label in zip(tokens_postag, labels):
+                    try:
+                        f.write(f"{word} {pos} {label}\n")
+                    except UnicodeEncodeError:
+                        continue
+                f.write('\n')
+            elif data_format == 'csv':
+                f.write('word,pos,label\n')
+                for (word, pos), label in zip(tokens_postag, labels):
+                    try:
+                        f.write(f"{word},{pos},{label}\n")
+                    except UnicodeEncodeError:
+                        continue
+                f.write('\n')
     print(f"Saved dataset to {save_path}")
     print(f"Dataset size: {len(dataset)}")
 
@@ -79,7 +88,7 @@ def save_dataset(dataset, save_path):
 @click.option('--dataset_name', type=str, default='tiagoblima/punctuation-nilc-bert')
 @click.option('--save_path', type=str, default='datasets')
 @click.option('--splits', type=str, default='train,validation,test')
-@click.option('--save_format', type=str, default='txt')
+@click.option('--save_format', type=str, default='conll')
 @click.option('--text_column', type=str, default='text')
 def main(
         dataset_name,
@@ -101,13 +110,13 @@ def main(
     save_path = os.path.join(save_path, dataset_name)
 
     os.makedirs(save_path, exist_ok=True)
-
+    nlp = spacy.load('pt_core_news_sm', disable=['parser', 'ner', 'lemmatizer', 'textcat'])
     dataset = load_dataset(dataset_name)
     for split in splits.split(','):
         split = split.strip()
         dataset_split = dataset[split]
         split = split.replace('validation', 'dev')
-        save_dataset(dataset_split[text_column], os.path.join(save_path, f'{split}.{save_format}'))
+        save_dataset(dataset_split[text_column], os.path.join(save_path, f'{split}.{save_format}'), nlp, save_format)
 
 
 if __name__ == '__main__':
