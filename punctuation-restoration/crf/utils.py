@@ -116,7 +116,7 @@ def extract_features(sentence, i):
             '+2:word.isupper()': word1.isupper(),
             '+2:postag': postag1.encode('ascii'),
             '+2:postag[:2]': postag1[:2].encode('ascii'),
-            '+2:word.islower()': word1.islower().encode('ascii')
+            '+2:word.islower()': word1.islower()
         })
     return features
 
