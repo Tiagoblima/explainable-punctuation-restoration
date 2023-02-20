@@ -62,25 +62,23 @@ def save_dataset(dataset, save_path, nlp, data_format='conll'):
     with open(save_path, 'w') as f:
         sent_id = 0
         if data_format == 'csv':
-            f.write('sent_id,word,pos,label\n')
+            f.write('sent_id,word,label\n')
         for sentence in nlp.pipe(dataset, batch_size=1000):
-            tokens = [token.text.lower() for token in sentence]
+            tokens = wordpunct_tokenize(sentence.lower())
             labels = tokens2labels(tokens)
-            tokens_postag = [(token.text.lower(), nlp.vocab[token.pos].text) for token in sentence if
-                             not token.is_punct]
+            tokens = [token for token in tokens if token not in string.punctuation]
             if data_format == 'conll':
-                for (word, pos), label in zip(tokens_postag, labels):
+                for word, label in zip(tokens, labels):
                     try:
-                        f.write(f"{word} {pos} {label}\n")
+                        f.write(f"{word} {label}\n")
                     except UnicodeEncodeError:
                         continue
                 f.write('\n')
             elif data_format == 'csv':
 
-
-                for (word, pos), label in zip(tokens_postag, labels):
+                for word, label in zip(tokens, labels):
                     try:
-                        f.write(f"{sent_id},{word},{pos},{label}\n")
+                        f.write(f"{sent_id},{word},{label}\n")
                     except UnicodeEncodeError:
                         continue
                 sent_id += 1

@@ -30,7 +30,7 @@ def run(args):
                 preprocess(dataset_path, out_path)  # preprocess dataset
                 report_dir = f'./results/{corpus_name}/{folder}'
                 os.makedirs(report_dir, exist_ok=True)
-                preprocess(dataset_path, args.path_to_data)
+                # preprocess(dataset_path, args.path_to_data)
                 train_file = os.path.join(out_path, 'train.csv')
                 test_file = os.path.join(out_path, 'test.csv')
 

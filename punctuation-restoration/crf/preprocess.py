@@ -6,6 +6,7 @@ from nltk.tokenize import regexp
 import argparse
 from sklearn.model_selection import train_test_split
 
+
 # parser = argparse.ArgumentParser(description='Process dataframe data.')
 #
 # parser.add_argument('--text_path',
@@ -98,7 +99,7 @@ def preprocess(base_dir, output_dir):
 
             dataset2.extend(replace(i, text))
 
-        df = pd.DataFrame(np.array(dataset2), columns=['sentence_id', 'labels', 'words'])
+        df = pd.DataFrame(np.array(dataset2), columns=['sentence_id', 'words', 'labels'])
         df.to_csv(os.path.join(output_dir, f'{filetype}.csv'), index=False, index_label=False)
 
 
