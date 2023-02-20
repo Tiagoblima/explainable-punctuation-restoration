@@ -35,7 +35,7 @@ def run(args):
                 test_file = os.path.join(out_path, 'test.conll')
 
                 report_file = os.path.join(report_dir, corpus_name + '_crf.csv')
-
+                print(test_file)
                 test_data = read_corpus_file(test_file, split_char=',')
                 train_data = read_corpus_file(train_file, split_char=',')
 
