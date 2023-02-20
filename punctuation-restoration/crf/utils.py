@@ -61,8 +61,8 @@ def extract_features(sentence, i):
         'word.isupper()': word.isupper(),
         'word.istitle()': word.istitle(),
         'word.isdigit()': word.isdigit(),
-        'postag': postag,
-        'postag[:2]': postag[:2],
+        'postag': postag.encode('ascii'),
+        'postag[:2]': postag[:2].encode('ascii'),
         'word.islower()': word.islower(),
         'word[0].isupper()': word[0].isupper(),
         'word[0].islower()': word[0].islower(),
@@ -77,8 +77,8 @@ def extract_features(sentence, i):
             '-1:word.lower()': word1.lower(),
             '-1:word.istitle()': word1.istitle(),
             '-1:word.isupper()': word1.isupper(),
-            '-1:postag': postag1,
-            '-1:postag[:2]': postag1[:2],
+            '-1:postag': postag1.encode('ascii'),
+            '-1:postag[:2]': postag1[:2].encode('ascii'),
             '-1:word.islower()': word1.islower()
         })
     else:
@@ -90,8 +90,8 @@ def extract_features(sentence, i):
             '-2:word.lower()': word1.lower(),
             '-2:word.istitle()': word1.istitle(),
             '-2:word.isupper()': word1.isupper(),
-            '-2:postag': postag1,
-            '-2:postag[:2]': postag1[:2],
+            '-2:postag': postag1.encode('ascii'),
+            '-2:postag[:2]': postag1[:2].encode('ascii'),
             '-2:word.islower()': word1.islower()
         })
     if i < len(sentence) - 1:
@@ -101,8 +101,8 @@ def extract_features(sentence, i):
             '+1:word.lower()': word1.lower(),
             '+1:word.istitle()': word1.istitle(),
             '+1:word.isupper()': word1.isupper(),
-            '+1:postag': postag1,
-            '+1:postag[:2]': postag1[:2],
+            '+1:postag': postag1.encode('ascii'),
+            '+1:postag[:2]': postag1[:2].encode('ascii'),
             '+1:word.islower()': word1.islower()
         })
     else:
@@ -114,8 +114,8 @@ def extract_features(sentence, i):
             '+2:word.lower()': word1.lower(),
             '+2:word.istitle()': word1.istitle(),
             '+2:word.isupper()': word1.isupper(),
-            '+2:postag': postag1,
-            '+2:postag[:2]': postag1[:2],
+            '+2:postag': postag1.encode('ascii'),
+            '+2:postag[:2]': postag1[:2].encode('ascii'),
             '+2:word.islower()': word1.islower()
         })
     return features
