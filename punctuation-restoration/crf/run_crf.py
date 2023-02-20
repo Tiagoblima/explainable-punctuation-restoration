@@ -144,7 +144,8 @@ def run(args):
         crf.fit(X_train, y_train)
 
         y_pred = crf.predict(X_test)
-
+        print(y_pred[:1])
+        print(y_test[:1])
         dict_report = classification_report(y_test, y_pred, output_dict=True)
 
         data_conll = ''
