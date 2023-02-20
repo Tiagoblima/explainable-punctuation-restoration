@@ -103,7 +103,7 @@ def extract_features(sentence, i):
             '+1:word.isupper()': word1.isupper(),
             '+1:postag': postag1.encode('ascii'),
             '+1:postag[:2]': postag1[:2].encode('ascii'),
-            '+1:word.islower()': word1.islower().encode('ascii')
+            '+1:word.islower()': word1.islower()
         })
     else:
         features['EOS'] = True
