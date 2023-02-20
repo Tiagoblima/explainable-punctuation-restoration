@@ -16,8 +16,7 @@ def read_corpus_file(corpus_file, split_char=','):
         fragments = line.split(split_char)
         current_id_sent = int(fragments[0])
 
-        if fragments[1] and fragments[2]:
-            print(fragments)
+        if not (fragments[1] and fragments[2]):
             continue
 
         if previous_id_sent != -1 and previous_id_sent != current_id_sent:
