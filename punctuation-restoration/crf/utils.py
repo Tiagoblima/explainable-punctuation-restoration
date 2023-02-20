@@ -55,9 +55,9 @@ def extract_features(sentence, i):
     postag = sentence[i][1]
     features = {
         'bias': 1.0,
-        'word.lower()': word.lower(),
-        'word[-3:]': word[-3:],
-        'word[-2:]': word[-2:],
+        'word.lower()': word.lower().encode('ascii'),
+        'word[-3:]': word[-3:].encode('ascii'),
+        'word[-2:]': word[-2:].encode('ascii'),
         'word.isupper()': word.isupper(),
         'word.istitle()': word.istitle(),
         'word.isdigit()': word.isdigit(),
@@ -74,7 +74,7 @@ def extract_features(sentence, i):
         word1 = sentence[i - 1][0]
         postag1 = sentence[i - 1][1]
         features.update({
-            '-1:word.lower()': word1.lower(),
+            '-1:word.lower()': word1.lower().encode('ascii'),
             '-1:word.istitle()': word1.istitle(),
             '-1:word.isupper()': word1.isupper(),
             '-1:postag': postag1.encode('ascii'),
@@ -87,23 +87,23 @@ def extract_features(sentence, i):
         word1 = sentence[i - 2][0]
         postag1 = sentence[i - 2][1]
         features.update({
-            '-2:word.lower()': word1.lower(),
+            '-2:word.lower()': word1.lower().encode('ascii'),
             '-2:word.istitle()': word1.istitle(),
             '-2:word.isupper()': word1.isupper(),
             '-2:postag': postag1.encode('ascii'),
             '-2:postag[:2]': postag1[:2].encode('ascii'),
-            '-2:word.islower()': word1.islower()
+            '-2:word.islower()': word1.islower().encode('ascii')
         })
     if i < len(sentence) - 1:
         word1 = sentence[i + 1][0]
         postag1 = sentence[i + 1][1]
         features.update({
-            '+1:word.lower()': word1.lower(),
+            '+1:word.lower()': word1.lower().encode('ascii'),
             '+1:word.istitle()': word1.istitle(),
             '+1:word.isupper()': word1.isupper(),
             '+1:postag': postag1.encode('ascii'),
             '+1:postag[:2]': postag1[:2].encode('ascii'),
-            '+1:word.islower()': word1.islower()
+            '+1:word.islower()': word1.islower().encode('ascii')
         })
     else:
         features['EOS'] = True
@@ -111,12 +111,12 @@ def extract_features(sentence, i):
         word1 = sentence[i + 2][0]
         postag1 = sentence[i + 2][1]
         features.update({
-            '+2:word.lower()': word1.lower(),
+            '+2:word.lower()': word1.lower().encode('ascii'),
             '+2:word.istitle()': word1.istitle(),
             '+2:word.isupper()': word1.isupper(),
             '+2:postag': postag1.encode('ascii'),
             '+2:postag[:2]': postag1[:2].encode('ascii'),
-            '+2:word.islower()': word1.islower()
+            '+2:word.islower()': word1.islower().encode('ascii')
         })
     return features
 
