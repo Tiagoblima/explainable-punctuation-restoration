@@ -108,8 +108,8 @@ def run(args):
         report_dir = f'./results/{corpus_name}'
         os.makedirs(report_dir, exist_ok=True)
 
-        train_file = os.path.join(args.path_to_data, 'train.conll')
-        test_file = os.path.join(args.path_to_data, 'test.conll')
+        train_file = os.path.join(args.path_to_data, 'train.csv')
+        test_file = os.path.join(args.path_to_data, 'test.csv')
 
         report_file = os.path.join(report_dir, corpus_name + '_crf.csv')
 
