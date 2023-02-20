@@ -35,7 +35,7 @@ def run(args):
                 test_file = os.path.join(out_path, 'test.conll')
 
                 report_file = os.path.join(report_dir, corpus_name + '_crf.csv')
-                print(test_file)
+
                 test_data = read_corpus_file(test_file, split_char=',')
                 train_data = read_corpus_file(train_file, split_char=',')
 
@@ -108,8 +108,8 @@ def run(args):
         report_dir = f'./results/{corpus_name}'
         os.makedirs(report_dir, exist_ok=True)
 
-        train_file = os.path.join(args.path_to_data, 'train.csv')
-        test_file = os.path.join(args.path_to_data, 'test.csv')
+        train_file = os.path.join(args.path_to_data, 'train.conll')
+        test_file = os.path.join(args.path_to_data, 'test.conll')
 
         report_file = os.path.join(report_dir, corpus_name + '_crf.csv')
 
