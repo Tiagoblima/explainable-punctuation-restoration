@@ -53,7 +53,7 @@ def extract_labels(sentence):
 def extract_features(sentence, i):
     word = sentence[i][0].encode('ascii', 'ignore').decode('ascii')
     postag = sentence[i][1].encode('ascii', 'ignore').decode('ascii')
-    print(word.isascii(), postag.isascii())
+
 
     features = {
         'bias': 1.0,
@@ -72,54 +72,7 @@ def extract_features(sentence, i):
         'not word.isalnum()': not word.isalnum(),
         'word.isalpha()': word.isalpha()
     }
-    if i > 0:
-        word1 = sentence[i - 1][0]
-        postag1 = sentence[i - 1][1]
-        features.update({
-            '-1:word.lower()': word1.lower(),
-            '-1:word.istitle()': word1.istitle(),
-            '-1:word.isupper()': word1.isupper(),
-            '-1:postag': postag1,
-            '-1:postag[:2]': postag1[:2],
-            '-1:word.islower()': word1.islower()
-        })
-    else:
-        features['BOS'] = True
-    if i > 1:
-        word1 = sentence[i - 2][0]
-        postag1 = sentence[i - 2][1]
-        features.update({
-            '-2:word.lower()': word1.lower(),
-            '-2:word.istitle()': word1.istitle(),
-            '-2:word.isupper()': word1.isupper(),
-            '-2:postag': postag1,
-            '-2:postag[:2]': postag1[:2],
-            '-2:word.islower()': word1.islower()
-        })
-    if i < len(sentence) - 1:
-        word1 = sentence[i + 1][0]
-        postag1 = sentence[i + 1][1]
-        features.update({
-            '+1:word.lower()': word1.lower(),
-            '+1:word.istitle()': word1.istitle(),
-            '+1:word.isupper()': word1.isupper(),
-            '+1:postag': postag1,
-            '+1:postag[:2]': postag1[:2],
-            '+1:word.islower()': word1.islower()
-        })
-    else:
-        features['EOS'] = True
-    if i < len(sentence) - 2:
-        word1 = sentence[i + 2][0]
-        postag1 = sentence[i + 2][1]
-        features.update({
-            '+2:word.lower()': word1.lower(),
-            '+2:word.istitle()': word1.istitle(),
-            '+2:word.isupper()': word1.isupper(),
-            '+2:postag': postag1,
-            '+2:postag[:2]': postag1[:2],
-            '+2:word.islower()': word1.islower()
-        })
+
     return features
 
 
