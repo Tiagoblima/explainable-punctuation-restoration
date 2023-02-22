@@ -58,7 +58,7 @@ def run(args):
     print(set(chain.from_iterable(y_test)))
     dict_report = classification_report(y_test, y_pred, output_dict=True)
 
-    pickle.dump(crf, open(args.model_type, 'wb'))
+    pickle.dump(crf, open(args.model_name, 'wb'))
     data_conll = ''
 
     for data, real_tags, pred_tags in zip(test_data, y_test, y_pred):
@@ -94,5 +94,9 @@ if __name__ == '__main__':
                         default=False,
                         help='Files must be a dataframe with headers sentence_id,words,label')
 
+    parser.add_argument('--model_name',
+                        default='model_crf.pkl',
+                        type=str,
+                        help='Files must be a dataframe with headers sentence_id,words,label')
     args = parser.parse_args()
     run(args)
