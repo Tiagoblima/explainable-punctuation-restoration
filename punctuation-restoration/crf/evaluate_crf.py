@@ -37,9 +37,9 @@ def main(args):
 
     dict_report, y_pred = evaluate(X_test, y_test, args.model_path)
 
-    os.makedirs(args.report_path, exist_ok=True)
-    args.report_path = os.path.join(args.report_path, os.path.split(args.path_to_data)[-1])
 
+    args.report_path = os.path.join(args.report_path, os.path.split(args.path_to_data)[-1])
+    os.makedirs(args.report_path, exist_ok=True)
     print('\nReport:', dict_report)
 
     print('\nSaving the report in:', args.report_path)
