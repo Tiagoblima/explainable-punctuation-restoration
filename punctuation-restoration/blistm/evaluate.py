@@ -2,6 +2,7 @@ import json
 import os
 
 import click
+import pandas as pd
 from flair.datasets import ColumnCorpus
 from flair.models import SequenceTagger
 
@@ -34,8 +35,9 @@ def main(
     model = SequenceTagger.load(path_to_model)
     clf_report, report = evaluate(corpus, model)
     os.makedirs(report_path, exist_ok=True)
-    json.dump(report, open(os.path.join(report_path, 'report.json'), 'w'))
-    json.dump(clf_report, open(os.path.join(report_path, 'clf_report.json'), 'w'))
+    pd.DataFrame(report, index=[0]).to_csv(os.path.join(report_path, 'report.csv'), index=False)
+    pd.DataFrame(clf_report, index=[0]).to_csv(os.path.join(report_path, 'clf_report.csv'), index=False)
+
     print(clf_report)
     print(report)
 
