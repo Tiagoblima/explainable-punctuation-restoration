@@ -30,7 +30,7 @@ def main(
                                         test_file='test.txt',
                                         dev_file='dev.txt')
     model = SequenceTagger.load(path_to_model)
-    clf_report, report = evaluate(corpus, model)
+    clf_report = evaluate(corpus, model)
     os.makedirs(report_path, exist_ok=True)
     pd.DataFrame(report).T.to_csv(os.path.join(report_path, 'report.csv'))
     pd.DataFrame(clf_report).T.to_csv(os.path.join(report_path, 'clf_report.csv'))
