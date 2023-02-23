@@ -29,7 +29,7 @@ def build_report(test_data, y_test, y_pred):
 
 
 def main(args):
-    test_file = os.path.join(args.path_to_data, 'test.csv')
+    test_file = os.path.join(args.path_to_data, args.filename)
     test_data = read_corpus_file(test_file, split_char=',')
     # Load dataset
     test_data = data_preprocessing(test_data)
@@ -65,5 +65,9 @@ if __name__ == '__main__':
     parser.add_argument('--report_path',
                         default='./results/',
                         help='Path to final report')
+
+    parser.add_argument('--filename',
+                        default='test.csv',
+                        help='Filename of the dataset')
     args = parser.parse_args()
     main(args)
