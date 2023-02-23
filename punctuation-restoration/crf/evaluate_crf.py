@@ -63,7 +63,7 @@ if __name__ == '__main__':
                         help='Files must be a dataframe with headers sentence_id,words,label')
 
     parser.add_argument('--report_path',
-                        default='./reports/',
+                        default='./results/',
                         help='Path to final report')
     args = parser.parse_args()
     main(args)
