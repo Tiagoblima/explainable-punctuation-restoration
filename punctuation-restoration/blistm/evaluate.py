@@ -32,11 +32,9 @@ def main(
     model = SequenceTagger.load(path_to_model)
     clf_report = evaluate(corpus, model)
     os.makedirs(report_path, exist_ok=True)
-    pd.DataFrame(report).T.to_csv(os.path.join(report_path, 'report.csv'))
     pd.DataFrame(clf_report).T.to_csv(os.path.join(report_path, 'clf_report.csv'))
-
     print(clf_report)
-    print(report)
+
 
 
 if __name__ == '__main__':
