@@ -28,9 +28,9 @@ def main(
 ):
     columns = {0: 'text', 1: 'ner'}
     corpus: ColumnCorpus = ColumnCorpus(path_to_data, columns,
-                                        train_file='train.csv',
-                                        test_file='test.csv',
-                                        dev_file='dev.csv')
+                                        train_file='train.txt',
+                                        test_file='test.txt',
+                                        dev_file='dev.txt')
     model = SequenceTagger.load(path_to_model)
     clf_report, report = evaluate(corpus, model)
     os.makedirs(report_path, exist_ok=True)
