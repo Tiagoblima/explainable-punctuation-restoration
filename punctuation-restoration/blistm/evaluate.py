@@ -28,7 +28,7 @@ def main(
 ):
     columns = {0: 'text', 1: 'ner'}
     splits = splits.split(',')
-    split_kwargs = {split+"_file": f'{split}.txt' for split in splits}
+    split_kwargs = {split + "_file": f'{split}.txt' for split in splits}
     corpus: ColumnCorpus = ColumnCorpus(path_to_data, columns,
                                         **split_kwargs)
     model = SequenceTagger.load(path_to_model)
@@ -36,7 +36,6 @@ def main(
     os.makedirs(report_path, exist_ok=True)
     pd.DataFrame(clf_report).T.to_csv(os.path.join(report_path, 'clf_report.csv'))
     print(clf_report)
-
 
 
 if __name__ == '__main__':
