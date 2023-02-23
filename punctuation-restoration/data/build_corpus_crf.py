@@ -112,8 +112,8 @@ def main(
     save_path = os.path.join(save_path, dataset_name)
 
     os.makedirs(save_path, exist_ok=True)
-    nlp = spacy.load('pt_core_news_sm', disable=['parser', 'ner', 'lemmatizer', 'textcat'])
     dataset = load_dataset(dataset_name)
+
     for split in splits.split(','):
         split = split.strip()
         dataset_split = dataset[split]
