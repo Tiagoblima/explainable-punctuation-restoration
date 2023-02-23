@@ -26,7 +26,6 @@ def main(
         path_to_data: str,
         report_path: str
 ):
-
     columns = {0: 'text', 1: 'ner'}
     corpus: ColumnCorpus = ColumnCorpus(path_to_data, columns,
                                         train_file='train.csv',
@@ -39,6 +38,7 @@ def main(
     json.dump(clf_report, open(os.path.join(report_path, 'clf_report.json'), 'w'))
     print(clf_report)
     print(report)
+
 
 if __name__ == '__main__':
     main()
