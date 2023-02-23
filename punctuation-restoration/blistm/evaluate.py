@@ -19,16 +19,18 @@ def evaluate(corpus, tagger: SequenceTagger):
 @click.option('--path_to_model', default='./results/bilstm-model.pt', help='Path to model')
 @click.option('--path_to_data', default='./data/tedtalk2012', help='Path to data')
 @click.option('--report_path', default='./results/', help='Path to final report')
+@click.option('--splits', default='train,dev,test', help='Corpus splits')
 def main(
         path_to_model: str,
         path_to_data: str,
-        report_path: str
+        report_path: str,
+        splits: str
 ):
     columns = {0: 'text', 1: 'ner'}
+    splits = splits.split(',')
+    split_kwargs = {split+"_file": f'{split}.txt' for split in splits}
     corpus: ColumnCorpus = ColumnCorpus(path_to_data, columns,
-                                        train_file='train.txt',
-                                        test_file='test.txt',
-                                        dev_file='dev.txt')
+                                        **split_kwargs)
     model = SequenceTagger.load(path_to_model)
     clf_report = evaluate(corpus, model)
     os.makedirs(report_path, exist_ok=True)
