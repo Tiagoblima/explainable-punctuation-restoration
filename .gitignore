@@ -1,6 +1,6 @@
-nlp-annotation/data
+data_annotation/data
 .idea/
-/nlp-annotation/data/
+/data_annotation/data/
 /nlp-annotation/notebooks/
 /nlp-annotation/
 /punctuation-restoration/archives/
