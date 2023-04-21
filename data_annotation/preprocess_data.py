@@ -7,6 +7,7 @@ from collections import defaultdict
 import click
 import datasets
 import spacy
+from spacy import tokens
 
 from data_annotation.preprocess_text import preprocess_sentence, label2text
 from data_annotation.util.quality import remove_bad_tokens
@@ -57,7 +58,7 @@ def get_ner_label(annot_, token_id):
     elif condition_4 or condition_5:
         label = "NO-PUNCT"
     else:
-        raise ValueError(f"Condition for {match_token} and label {annot.label_} not implemented ")
+        raise ValueError(f"Condition for {match_token} and label {annot_.label_} not implemented ")
 
     return label
 
