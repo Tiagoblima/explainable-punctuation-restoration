@@ -9,8 +9,8 @@ from transformers import pipeline
 
 from seq2seq.evaluate_t5 import get_t5_pred_sentence
 from seq_labeling.evalute_bert import get_bert_pred_sentence
-from utils.utils import remove_punctuation
-from utils.utils import text2labels
+from data.utils.utils import remove_punctuation
+from data.utils.utils import text2labels
 
 TEDTALK2012_BERT_BASE = 'tiagoblima/punctuation-tedtalk2012-bert-base'
 TEDTALK2012_BERT_LARGE = 'tiagoblima/punctuation-tedtalk2012-bert-large'

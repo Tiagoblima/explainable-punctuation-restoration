@@ -1,7 +1,7 @@
 import spacy
 from spacy import tokens, displacy
 
-from data_annotation.preprocess_data import corrector, hyperseg, hyposeg, remover
+from data_annotation.create_mec_dataset import corrector, hyperseg, hyposeg, remover
 from data_annotation.util.show import log
 
 

@@ -1,6 +1,7 @@
 import re
 
-from data_annotation.preprocess_data import special_pattern, marks
+special_pattern = re.compile(r'\s+|\n+|/n|\t+|-|—')
+marks = re.compile(r'\[\w{0,3}|\W{0,3}\]|\(|\)')
 
 
 def join_punctuation_marks(text):

@@ -5,7 +5,6 @@ from spacy import tokens
 from spellchecker import SpellChecker
 import re
 
-from data_annotation.preprocess_data import remover
 
 dictionary = Path('data/usp-spell-wordfreq.gz')
 spell = SpellChecker('pt', local_dictionary=str(dictionary) if dictionary.exists() else None)
