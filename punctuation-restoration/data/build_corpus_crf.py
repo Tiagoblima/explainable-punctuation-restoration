@@ -66,6 +66,7 @@ def save_dataset(dataset, save_path, data_format='conll'):
             tokens = wordpunct_tokenize(sentence.lower())
             labels = tokens2labels(tokens)
             tokens = [token for token in tokens if token not in string.punctuation]
+
             if data_format == 'conll':
                 for word, label in zip(tokens, labels):
                     try:
@@ -118,7 +119,9 @@ def main(
         split = split.strip()
         dataset_split = dataset[split]
         split = split.replace('validation', 'dev')
-        save_dataset(dataset_split[text_column], os.path.join(save_path, f'{split}.{save_format}'), save_format)
+        save_dataset(dataset_split[text_column],
+                     os.path.join(save_path, f'{split}.{save_format}'),
+                     save_format)
 
 
 if __name__ == '__main__':
