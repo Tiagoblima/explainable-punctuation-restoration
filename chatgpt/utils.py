@@ -1,10 +1,14 @@
+import os
 import time
 
 import openai
 from seqeval.metrics import classification_report
 import string
 from nltk.tokenize import wordpunct_tokenize
-from chatgpt.constants import API_KEY
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.getenv('OPENAI_API_KEY')
 
 
 def remove_punctuation(text):
