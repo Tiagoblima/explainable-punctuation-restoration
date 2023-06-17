@@ -62,17 +62,19 @@ def compute_scores(true_labels, pred_labels):
     return classification_report(new_true_labels, new_pred_labels, output_dict=True)
 
 
-openai.api_key = API_KEY
+
 
 
 def chat_gpt_predict(messages):
+    openai.api_key = API_KEY
     while True:
         try:
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messages
             )
-        except Exception as e:
+        except openai.error.RateLimitError:
+
             time.sleep(20)
             continue
         break
