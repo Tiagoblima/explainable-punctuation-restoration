@@ -1,3 +1,4 @@
+import os.path
 import time
 
 import jsonlines
@@ -27,8 +28,15 @@ def prepare_prompt(sent_text):
 
 predictions = []
 text_column_name = "sent_text"
-with jsonlines.open('results/20_shot/punctuation_predictions.jsonl', mode='w') as writer:
-    for sent_text in tqdm(mec_dataset[text_column_name], total=len(mec_dataset[text_column_name])):
+
+continue_from_checkpoint = os.path.isfile('results/20_shot/punctuation_predictions.jsonl')
+
+with jsonlines.open('results/20_shot/punctuation_predictions.jsonl', mode='a') as writer:
+    if continue_from_checkpoint:
+        with jsonlines.open('results/20_shot/punctuation_predictions.jsonl') as reader:
+            for i, line in enumerate(reader):
+                predictions.append(line)
+    for sent_text in tqdm(mec_dataset[text_column_name][i:], total=len(mec_dataset[text_column_name]) - i):
         messages = [prepare_prompt(sent_text)]
 
         pred_text = chat_gpt_predict(messages)
