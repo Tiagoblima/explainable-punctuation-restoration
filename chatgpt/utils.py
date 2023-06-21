@@ -62,11 +62,13 @@ def compute_scores(true_labels, pred_labels):
     return classification_report(new_true_labels, new_pred_labels, output_dict=True)
 
 
+def prepare_prompt(sent_text):
+    return {"role": "user", "content": " ".join(remove_punctuation(sent_text))}
 
 
-
-def chat_gpt_predict(messages):
-    openai.api_key = API_KEY
+def chat_gpt_predict(prompt, api_key):
+    openai.api_key = api_key
+    messages = [prepare_prompt(prompt)]
     while True:
         try:
             response = openai.ChatCompletion.create(

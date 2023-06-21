@@ -19,7 +19,7 @@ openai.api_key = API_KEY
 def prepare_prompt(sent_text):
     new_text = " ".join(remove_punctuation(sent_text))
 
-    prompt = f"corriga a seguinte frase colocando os sinais de 'ponto final' e 'vírgula' sem qualquer outra mudança:  '{new_text}'"
+    prompt = f"corrija a seguinte frase colocando os sinais de 'ponto final' e 'vírgula' sem qualquer outra mudança:  '{new_text}'"
     prompt += "\n\nbons exemplos de anotação:\n"
     prompt += "\n".join(sample for sample in nilc_dataset[:20]["text"])
 

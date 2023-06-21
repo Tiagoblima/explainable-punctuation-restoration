@@ -1,52 +1,39 @@
-import string
-import time
+import os
 
 import jsonlines
-from datasets import load_dataset
-import openai
 import pandas as pd
-from nltk.tokenize import wordpunct_tokenize
+from datasets import load_dataset
 from tqdm import tqdm
-from constants import API_KEY
 
-from chatgpt.utils import remove_punctuation, text2labels
-
-eval_split = 'train'
-eval_dataset = load_dataset('tiagoblima/punctuation-mec-bert-v2', split=eval_split)
+from chatgpt.utils import text2labels, chat_gpt_predict
 
 
+def main(dataset_name: str,
+         save_path: str,
+         api_key: str,
+         split_name: str = 'train',
+         text_column_name: str = 'text'):
+    prompt = "coloque os sinais de 'ponto final' e 'vírgula' na seguinte sentença sem qualquer outra correção:"
 
+    predictions = []
 
-def prepare_prompt(sent_text):
-    return {"role": "user", "content": " ".join(remove_punctuation(sent_text))}
+    dataset = load_dataset(dataset_name, split=split_name)
 
+    path_to_file = f'{save_path}/punctuation_predictions.jsonl'
+    continue_from_checkpoint = os.path.isfile(path_to_file)
 
-StartPrompt = "coloque os sinais de 'ponto final' e 'vírgula' na seguinte sentença sem qualquer outra correção:"
-i = 1
-predictions = []
+    with jsonlines.open(path_to_file, mode='a') as writer:
+        if continue_from_checkpoint:
+            with jsonlines.open(path_to_file) as reader:
+                for i, line in enumerate(reader):
+                    predictions.append(line)
 
-with jsonlines.open('results/zero_shot/punctuation_predictions.jsonl', mode='w') as writer:
-    for sent_text in tqdm(eval_dataset["sent_text"], total=len(eval_dataset["sent_text"])):
-        messages = [{"role": "system", "content": StartPrompt}, prepare_prompt(sent_text)]
+        for sent_text in tqdm(dataset[text_column_name][i:], total=len(dataset[text_column_name]) - i):
+            prompt += f"\n\n'{sent_text}'"
+            pred_text = chat_gpt_predict(prompt, api_key)
+            writer.write({"pred_text": pred_text, "pred_labels": text2labels(pred_text)})
+            predictions.append({"pred_text": pred_text, "pred_labels": text2labels(pred_text)})
 
-        while True:
-            try:
-                response = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo",
-                    messages=messages
-                )
-            except openai.error.RateLimitError:
-                time.sleep(20)
-                continue
-            break
+    pred_df = pd.DataFrame(predictions)
 
-        i += 1
-
-        writer.write({"pred_text": pred_text, "pred_labels": text2labels(pred_text)})
-        predictions.append({"pred_text": pred_text, "pred_labels": text2labels(pred_text)})
-        time.sleep(20)
-
-pred_df = pd.DataFrame(predictions)
-
-pred_df.to_csv('punctuation_predictions.csv', index_label=False, index=False)
-
+    pred_df.to_csv('punctuation_predictions.csv', index_label=False, index=False)
