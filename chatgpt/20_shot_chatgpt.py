@@ -1,52 +1,71 @@
 import os.path
-import time
-
+import click
 import jsonlines
-import openai
 import pandas as pd
 from datasets import load_dataset
+from dotenv import load_dotenv
 from tqdm import tqdm
 
-from chatgpt.constants import API_KEY
 from chatgpt.utils import remove_punctuation, text2labels, compute_scores, chat_gpt_predict
 
-eval_split = 'train'
-mec_dataset = load_dataset('tiagoblima/punctuation-mec-bert-v2', split=eval_split)
-nilc_dataset = load_dataset('tiagoblima/punctuation-nilc-bert', split=eval_split)
-openai.api_key = API_KEY
+load_dotenv()
+API_KEY = os.getenv('OPENAI_API_KEY_GPT3.5TURBO')
+
+PROMPT = f"corrija a seguinte frase colocando os sinais de 'ponto final' e 'vírgula' " \
+         f"sem qualquer outra mudança:  "
 
 
-def prepare_prompt(sent_text):
-    new_text = " ".join(remove_punctuation(sent_text))
+def prepare_prompt(text, examples):
+    new_text = " ".join(remove_punctuation(text))
 
-    prompt = f"corrija a seguinte frase colocando os sinais de 'ponto final' e 'vírgula' sem qualquer outra mudança:  '{new_text}'"
+    prompt = PROMPT + f"'{new_text}'"
     prompt += "\n\nbons exemplos de anotação:\n"
-    prompt += "\n".join(sample for sample in nilc_dataset[:20]["text"])
+    prompt += "\n".join(sample for sample in examples)
 
-    return {"role": "user", "content": prompt}
-
-
-predictions = []
-text_column_name = "sent_text"
-
-continue_from_checkpoint = os.path.isfile('results/20_shot/punctuation_predictions.jsonl')
-
-with jsonlines.open('results/20_shot/punctuation_predictions.jsonl', mode='a') as writer:
-    if continue_from_checkpoint:
-        with jsonlines.open('results/20_shot/punctuation_predictions.jsonl') as reader:
-            for i, line in enumerate(reader):
-                predictions.append(line)
-    for sent_text in tqdm(mec_dataset[text_column_name][i:], total=len(mec_dataset[text_column_name]) - i):
-        messages = [prepare_prompt(sent_text)]
-
-        pred_text = chat_gpt_predict(messages)
-        writer.write({"pred_text": pred_text, "pred_labels": text2labels(pred_text)})
-        predictions.append({"pred_text": pred_text, "pred_labels": text2labels(pred_text)})
+    return prompt
 
 
-pred_df = pd.DataFrame(predictions)
+@click.command()
+@click.option('--train_dataset_name', default='tiagoblima/punctuation-nilc-bert', help='Dataset name')
+@click.option('--eval_dataset_name', default='tiagoblima/punctuation-mec-bert-v2', help='Dataset name')
+@click.option('--prompt', default=PROMPT, help='Prompt to be used')
+@click.option('--save_path', default='results/chatgpt3-turbo/20_shot', help='Path to save results')
+@click.option("--api_key", default=API_KEY, help="OpenAI API key")
+@click.option('--train_split_name', default='train', help='Dataset split name')
+@click.option('--eval_split_name', default='train', help='Dataset split name')
+@click.option('--text_column_name', default='sent_text', help='Dataset text column name')
+def main(train_dataset_name: str,
+         eval_dataset_name: str,
+         save_path: str,
+         api_key: str,
+         train_split_name: str = 'train',
+         eval_split_name: str = 'train',
+         text_column_name: str = 'text'):
+    predictions = []
+    path_to_file = f'{save_path}/punctuation_predictions.jsonl'
+    continue_from_checkpoint = os.path.isfile(path_to_file)
 
-pred_df.to_csv('results/20_shot/punctuation_predictions.csv', index_label=False, index=False)
-pred_report = compute_scores(mec_dataset["labels"], pred_df['pred_labels'].tolist())
-report_df = pd.DataFrame.from_dict(pred_report, orient='index')
-report_df.to_csv('results/20_shot/punctuation_report.csv')
+    train_dataset = load_dataset(train_dataset_name, split=train_split_name)
+    eval_dataset = load_dataset(eval_dataset_name, split=eval_split_name)
+
+    with jsonlines.open(path_to_file, mode='a') as writer:
+        if continue_from_checkpoint:
+            with jsonlines.open(path_to_file) as reader:
+                for i, line in enumerate(reader):
+                    predictions.append(line)
+
+        for sent_text in tqdm(eval_dataset[text_column_name][i:], total=len(eval_dataset[text_column_name]) - i):
+            prompt = prepare_prompt(sent_text, train_dataset[text_column_name][:20])
+            pred_text = chat_gpt_predict(prompt, api_key)
+            writer.write({"pred_text": pred_text, "pred_labels": text2labels(pred_text)})
+            predictions.append({"pred_text": pred_text, "pred_labels": text2labels(pred_text)})
+
+    pred_df = pd.DataFrame(predictions)
+    pred_report = compute_scores(eval_dataset["labels"], pred_df['pred_labels'].tolist())
+    report_df = pd.DataFrame.from_dict(pred_report, orient='index')
+    report_df.to_csv(os.path.join(save_path, 'punctuation_report.csv'))
+    pred_df.to_csv(os.path.join(save_path, 'punctuation_predictions.csv'), index_label=False, index=False)
+
+
+if __name__ == '__main__':
+    main()

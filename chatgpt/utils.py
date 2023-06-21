@@ -1,14 +1,24 @@
-import os
+import string
 import time
 
 import openai
-from seqeval.metrics import classification_report
-import string
 from nltk.tokenize import wordpunct_tokenize
-from dotenv import load_dotenv
+from seqeval.metrics import classification_report
 
-load_dotenv()
-API_KEY = os.getenv('OPENAI_API_KEY')
+
+def compute_scores(true_labels, pred_labels):
+    new_true_labels = []
+    new_pred_labels = []
+    for t_lbls, p_lbls in zip(true_labels, pred_labels):
+        new_true_labels.append([
+            t_lbl for t_lbl, p_lbl in zip(t_lbls, p_lbls)
+        ])
+
+        new_pred_labels.append([
+            p_lbl for t_lbl, p_lbl in zip(t_lbls, p_lbls)
+        ])
+
+    return classification_report(new_true_labels, new_pred_labels, output_dict=True)
 
 
 def remove_punctuation(text):
