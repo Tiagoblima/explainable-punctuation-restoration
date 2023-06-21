@@ -29,7 +29,7 @@ def remove_punctuation(text):
     """
     text = [word.lower() for word in wordpunct_tokenize(text)
             if word not in string.punctuation]
-    return text
+    return " ".join(text)
 
 
 def text2labels(sentence):
