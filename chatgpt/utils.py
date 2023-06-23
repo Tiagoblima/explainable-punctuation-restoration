@@ -73,21 +73,22 @@ def compute_scores(true_labels, pred_labels):
 
 
 def prepare_prompt(sent_text):
-    return {"role": "user", "content": " ".join(remove_punctuation(sent_text))}
+    return {"role": "user", "content": sent_text}
 
 
-def chat_gpt_predict(prompt, api_key):
+def chat_gpt_predict(prompt, api_key, model="gpt-3.5-turbo"):
     openai.api_key = api_key
     messages = [prepare_prompt(prompt)]
     while True:
         try:
             response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
+                model=model,
                 messages=messages
             )
+            time.sleep(20)
         except openai.error.RateLimitError:
 
-            time.sleep(20)
+            time.sleep(60)
             continue
         break
     pred_text = response.choices[0].message.content.replace("\"", "")
