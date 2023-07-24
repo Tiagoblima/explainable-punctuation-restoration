@@ -85,7 +85,7 @@ def chat_gpt_predict(prompt, api_key, model="gpt-3.5-turbo"):
                 model=model,
                 messages=messages
             )
-            time.sleep(20)
+
         except openai.error.RateLimitError:
 
             time.sleep(60)

@@ -10,34 +10,47 @@ from tqdm import tqdm
 from chatgpt.utils import text2labels, chat_gpt_predict, compute_scores, remove_punctuation
 
 PROMPT = "coloque os sinais de 'ponto final' e 'vírgula' na seguinte sentença sem qualquer outra correção:"
-NEW_PROMPT = "Act like punctuation corrector in brazilian portuguese: Place the 'period' and 'comma' punctuation marks " \
-             "in the following sentence without any other corrections:"
+NEW_PROMPT = f"Act like punctuation corrector in brazilian portuguese: Place the 'period' and 'comma' punctuation marks " \
+             "in the following sentence without any other corrections:{sentence}"
 load_dotenv()
-API_KEY = os.getenv('OPENAI_API_KEY')
+API_KEY = os.getenv('OPENAI_API_KEY_GPT4')
 
 
 @click.command()
-@click.option('--dataset_name', default='tiagoblima/punctuation-mec-bert-v2', help='Dataset name')
+@click.option('--train_dataset_name', default='tiagoblima/punctuation-nilc-bert', help='Dataset name')
+@click.option('--test_dataset_name', default='tiagoblima/punctuation-mec-bert-v2', help='Dataset name')
+@click.option('--shots', default=0, help='Prompt to be used')
 @click.option('--prompt', default=NEW_PROMPT, help='Prompt to be used')
-@click.option('--model', default='gpt-3.5-turbo', help='Prompt to be used')
-@click.option('--save_path', default='results/gpt-3.5-turbo/zero_shot/', help='Path to save results')
+@click.option('--model', default="gpt-4", help='Prompt to be used')
+@click.option('--save_path', default='results/', help='Path to save results')
 @click.option("--api_key", default=API_KEY, help="OpenAI API key")
 @click.option('--split_name', default='train', help='Dataset split name')
-@click.option('--text_column_name', default='sent_text', help='Dataset text column name')
-def main(dataset_name: str,
-         prompt: str,
-         model: str,
-         save_path: str,
-         api_key: str,
-         split_name: str = 'train',
-         text_column_name: str = 'text'):
+@click.option('--text_column_name', default='text', help='Dataset text column name')
+def main(
+        train_dataset_name: str,
+        test_dataset_name: str,
+        shots: int,
+        prompt: str,
+        model: str,
+        save_path: str,
+        api_key: str,
+        split_name: str = 'train',
+        text_column_name: str = 'text'):
     predictions = []
 
-    dataset = load_dataset(dataset_name, split=split_name)
+    test_dataset = load_dataset(test_dataset_name, split=split_name)
+    train_dataset_name = load_dataset(train_dataset_name, split=split_name)
+
+    save_path = f'{save_path}/{model}/{shots}_shots'
     os.makedirs(save_path, exist_ok=True)
+
+    if shots > 0:
+        shot_samples = train_dataset_name.shuffle().select(range(shots))[text_column_name]
+        prompt = prompt + "\nhere are some good examples: " + "\n".join(shot_samples)
+
     path_to_file = f'{save_path}/punctuation_predictions.jsonl'
     continue_from_checkpoint = os.path.isfile(path_to_file)
-    open(os.path.join(save_path, "prompt.txt"), "w").write(prompt)
+    open(os.path.join(save_path, "prompt.txt"), "w", encoding='utf-8').write(prompt)
     with jsonlines.open(path_to_file, mode='a') as writer:
         i = 0
         if continue_from_checkpoint:
@@ -47,15 +60,16 @@ def main(dataset_name: str,
 
         def calculate_cost():
             list_of_words = list(
-                map(lambda x: (prompt + f"'{remove_punctuation(x)}'").split(), dataset[text_column_name]))
+                map(lambda x: (prompt.format(sentence=f"'{remove_punctuation(x)}'")).split(),
+                    test_dataset["sent_" +text_column_name]))
             total_words_prompt = len(list(chain.from_iterable(list_of_words)))
             total_input_tokens = ((total_words_prompt * 1000) / 750)
-            total_input_cost = (total_input_tokens/1000) * 0.03
+            total_input_cost = (total_input_tokens / 1000) * 0.03
 
-            list_of_words = list(map(lambda x: f"'{remove_punctuation(x)}'".split(), dataset[text_column_name]))
+            list_of_words = list(map(lambda x: f"'{remove_punctuation(x)}'".split(), test_dataset["sent_" +text_column_name]))
             output = len(list(chain.from_iterable(list_of_words)))
             total_output_tokens = ((output * 1000) / 750)
-            total_output_cost = (total_output_tokens/1000) * 0.06
+            total_output_cost = (total_output_tokens / 1000) * 0.06
 
             return total_input_cost, total_output_cost
 
@@ -63,10 +77,11 @@ def main(dataset_name: str,
 
         print(f"Total input cost, words + prompt: ${total_input_cost}")
         print(f"Total output cost: ${total_output_cost}")
-        print(f"Total cost: ${total_output_cost+total_input_cost}")
+        print(f"Total cost: ${total_output_cost + total_input_cost}")
 
-        for sent_text in tqdm(dataset[text_column_name][i:], total=len(dataset[text_column_name]) - i):
-            sent_prompt = prompt + f"'{remove_punctuation(sent_text)}'"
+        for sent_text in tqdm(test_dataset["sent_" + text_column_name][i:],
+                              total=len(test_dataset["sent_" + text_column_name]) - i):
+            sent_prompt = prompt.format(sentence=f"'{remove_punctuation(sent_text)}'")
 
             pred_text = chat_gpt_predict(sent_prompt, api_key, model=model)
 
@@ -74,7 +89,7 @@ def main(dataset_name: str,
             predictions.append({"pred_text": pred_text, "pred_labels": text2labels(pred_text)})
 
     pred_df = pd.DataFrame(predictions)
-    pred_report = compute_scores(dataset["labels"], pred_df['pred_labels'].tolist())
+    pred_report = compute_scores(test_dataset["labels"], pred_df['pred_labels'].tolist())
     report_df = pd.DataFrame.from_dict(pred_report, orient='index')
     report_df.to_csv(os.path.join(save_path, 'punctuation_report.csv'))
     pred_df.to_csv(os.path.join(save_path, 'punctuation_predictions.csv'), index_label=False, index=False)
