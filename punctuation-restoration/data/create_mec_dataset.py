@@ -1,19 +1,19 @@
 from __future__ import annotations
 
 import math
-import os
 import string
 from collections import defaultdict
 
 import click
 import datasets
 import spacy
+from utils import dataset
+from utils.annotation import preprocess, comparison
 from spacy import tokens
 
-from data_annotation.util.preprocess_text import preprocess_sentence, label2text
-from data_annotation.util.quality import remove_bad_tokens
-from data_annotation.util import dataset
-from data_annotation.util.annotation import preprocess, comparison
+from utils.preprocess_text import preprocess_sentence, label2text
+from utils.quality import remove_bad_tokens
+import json
 
 nlp = spacy.load('pt_core_news_md')
 nlp.add_pipe('sentencizer')
@@ -85,7 +85,6 @@ def load_raw_dataset(dataset_path: str, save_path: str = None):
 
 
 def add_new_token(cur_token, tokens_list):
-
     updated = False
     if cur_token not in string.punctuation + "...":
         tokens_list.append(cur_token)
@@ -97,7 +96,7 @@ def add_new_token(cur_token, tokens_list):
 @click.command()
 @click.option('--dataset_path', type=click.Path(exists=True), default=None)
 @click.option('--spacy_dataset_path', type=click.Path(exists=True),
-              default='./datasets/mec-dataset/apa-nlp-span-clean-fix-hyper-hypo.docbin')
+              default='./datasets/preprocessed-datasets/mec-dataset/apa-nlp-span-clean-fix-hyper-hypo.docbin')
 @click.option('--path_to_save', type=click.Path(exists=False), default='../data/dataset-ner.json')
 @click.option('--push_to_hf', type=bool, default=False)
 def main(dataset_path: str,
@@ -121,6 +120,7 @@ def main(dataset_path: str,
     print("Number of docs:", len(docs))
     results = []
     ner_dataset = []
+    no_annotations = []
     for text_id, doc in enumerate(docs, 1):
         documento = defaultdict(set)
         spans = doc.spans['punctuation']
@@ -140,9 +140,10 @@ def main(dataset_path: str,
 
         new_tokens = []
         new_ner_tags = []
+
         if len(list(filter(lambda x: x != "O", ner_tags))) == 0:
-            print(text_id, len(tokens), len(ner_tags))
-            print("No annotations found for this document")
+            # print(text_id, len(tokens), len(ner_tags))
+            no_annotations.append(text_id)
 
         for i, (token, tag) in enumerate(zip(tokens, ner_tags)):
 
@@ -175,8 +176,6 @@ def main(dataset_path: str,
                     new_ner_tags.append(tag)
 
             if len(new_ner_tags) and new_ner_tags[-1] == "I-PERIOD":
-
-
                 ner_dataset.append({
                     'text_id': text_id,
                     'text': doc.text,
@@ -188,9 +187,9 @@ def main(dataset_path: str,
                 new_tokens = []
                 new_ner_tags = []
         results.append(documento)
-
-    import json
-
+    print(f"No annotations found in {len(set(no_annotations))} texts.")
+    print(f"Total of {len(results)} documents.")
+    print(f"Total of {len(ner_dataset)} sentences with punctuation errors.")
     json.dump(ner_dataset, open(path_to_save, 'w'), indent=4)
 
     if push_to_hf:
