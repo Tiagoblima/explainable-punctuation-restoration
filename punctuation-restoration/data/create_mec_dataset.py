@@ -128,7 +128,9 @@ def main(dataset_path: str,
         ner_tags = ["O"] * len(doc)
         tokens = [token.text.lower() for token in doc]
 
-        for annot in comparison.merge(list(doc.sents), spans):
+        sents = list(doc.sents)
+        punctuations_sents = comparison.merge(sents, spans) # get sentences with punctuation errors
+        for annot in punctuations_sents:
 
             if len(preprocess_sentence(annot.sent.text).split()) < 3:
                 continue
