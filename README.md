@@ -5,7 +5,7 @@ Accurate punctuation in written text enables unambiguous communication, minimizi
 
 **Cite us**
 
-`` @article{de_Lima_2024,
+@article{de_Lima_2024,
   title         = {Towards explainable automatic punctuation restoration for Portuguese using transformers},
   author        = {de Lima, Tiago Barbosa and Rolim, Vitor and Nascimento, André C.A. and Miranda, Péricles and Macario, Valmir and Rodrigues, Luiz and Freitas, Elyda and Gašević, Dragan and Mello, Rafael Ferreira},
   year          = {2024},
@@ -18,4 +18,3 @@ Accurate punctuation in written text enables unambiguous communication, minimizi
   issn          = {0957-4174},
   url           = {http://dx.doi.org/10.1016/j.eswa.2024.125097}
 }
-``
